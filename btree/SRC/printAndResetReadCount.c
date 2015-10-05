@@ -2,7 +2,7 @@
 
 extern int btReadCount;
 
-void printAndResetReadCount() {
+void PrintAndResetReadCount() {
     printf("# of reads on B-tree:  %d\n", btReadCount);
     btReadCount = 0;
 }

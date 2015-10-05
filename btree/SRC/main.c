@@ -35,7 +35,7 @@ extern void printKey(struct KeyRecord *p);
 extern void printOcc(struct KeyRecord *p);
 extern int get_leftbracket(char *key, char *result);
 extern int get_rightbracket(char *key, char *result);
-extern int printAndResetReadCount();
+extern int PrintAndResetReadCount();
 
 int main(int argc, char **argv) {
     char word[MAXWORDSIZE];
@@ -98,6 +98,13 @@ int main(int argc, char **argv) {
             break;
         case ']':
             // implement me!
+            printf("word=?");
+            scanf("%s", word);
+            assert(strlen(word) < MAXWORDSIZE);
+            printf("\nRight bracket of %s:\n", word);
+            char result[MAXWORDSIZE];
+            assert(get_rightbracket(word, result) == 0);
+            printf("%s\n", result);
             break;
         case '[':
             // implement me!
@@ -108,7 +115,7 @@ int main(int argc, char **argv) {
             break;
         case '#':
             // implement me!
-            printAndResetReadCount();
+            PrintAndResetReadCount();
             break;
         case 'x':
             printf("\n*** Exiting .........\n");
