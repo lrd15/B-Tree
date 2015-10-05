@@ -54,7 +54,6 @@
 
 extern FILE *fpbtree;
 extern int btReadCount; /* counts the number of b-tree page reads */
-extern int fetchPageCount; /* counts the number of FetchPage calls */
 
 struct PageHdr *FetchPage(PAGENO Page)
 /* Page number of page to be fetched */
@@ -122,6 +121,5 @@ struct PageHdr *FetchPage(PAGENO Page)
         KeyListTraverser->Next = NULL;
 
     btReadCount++;
-    ++fetchPageCount;
     return (PagePtr);
 }

@@ -14,5 +14,3 @@ int pReadCount = 0;   /* number of reads on postings */
 int iCount = 0;       /* number of inserted words */
 int sqCount = 0;      /* number of successful queries */
 int uqCount = 0;      /* number of unsucc. queries */
-
-int fetchPageCount = 0; /* number of FetchPage calls */
