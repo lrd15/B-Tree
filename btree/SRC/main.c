@@ -35,6 +35,7 @@ extern void printKey(struct KeyRecord *p);
 extern void printOcc(struct KeyRecord *p);
 extern int get_leftbracket(char *key, char *result);
 extern int get_rightbracket(char *key, char *result);
+extern int printAndResetFetchPageCount();
 
 int main(int argc, char **argv) {
     char word[MAXWORDSIZE];
@@ -107,6 +108,7 @@ int main(int argc, char **argv) {
             break;
         case '#':
             // implement me!
+            printAndResetFetchPageCount();
             break;
         case 'x':
             printf("\n*** Exiting .........\n");
