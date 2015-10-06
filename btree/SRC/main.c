@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
     char word[MAXWORDSIZE];
     char cmd[MAXWORDSIZE];   /* string to hold a command */
     char fname[MAXWORDSIZE]; /* name of input file */
+    char result[MAXWORDSIZE]; /* string to hold get_right(left)bracket result */
     PAGENO i;
     int goOn;
 
@@ -102,12 +103,17 @@ int main(int argc, char **argv) {
             scanf("%s", word);
             assert(strlen(word) < MAXWORDSIZE);
             printf("\nRight bracket of %s:\n", word);
-            char result[MAXWORDSIZE];
             assert(get_rightbracket(word, result) == 0);
             printf("%s\n", result);
             break;
         case '[':
             // implement me!
+            printf("word=?");
+            scanf("%s", word);
+            assert(strlen(word) < MAXWORDSIZE);
+            printf("\nLeft bracket of %s:\n", word);
+            assert(get_leftbracket(word, result) == 0);
+            printf("%s\n", result);
             break;
         case 'T':
             printf("\n*** Printing tree in order .........\n");

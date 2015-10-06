@@ -76,7 +76,10 @@ char* ScanLeafRightBracket(PAGENO PageNo, char* key) {
             if (Result == 2 || IsPrefix(key, word)) {
                 KeyListTraverser = KeyListTraverser->Next;
             } else {
-                return word;
+                char *result = malloc(strlen(word) + 1);
+                strcpy(result, word);
+                FreePage(PagePtr);
+                return result;
             }
         }
         PageNo = PagePtr->PgNumOfNxtLfPg;
