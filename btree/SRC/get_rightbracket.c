@@ -4,30 +4,29 @@ extern int FreePage(struct PageHdr *PagePtr);
 extern struct PageHdr *FetchPage(PAGENO page);
 extern void strtolow(char *str);
 extern int CompareKeys(char *Key, char *Word);
-PAGENO GetRightbracketLeafpage(PAGENO PageNo, char *key);
-char* ScanLeafRightBracket(PAGENO PageNo, char* key);
+struct PageHdr* GetRightbracketLeafpage(PAGENO PageNo, char *key);
+void ScanLeafRightBracket(struct PageHdr *PagePtr, char *key, char *result);
 int IsPrefix(char *prefix, char *word);
 
 int get_rightbracket(char *key, char *result) {
     strtolow(key);
 
     // implement me!
-    PAGENO LeafPageNo = GetRightbracketLeafpage(ROOT, key);
-    char *word = ScanLeafRightBracket(LeafPageNo, key);
-    strcpy(result, word);
+    struct PageHdr *PagePtr = GetRightbracketLeafpage(ROOT, key);
+    ScanLeafRightBracket(PagePtr, key, result);
     return 0;
 }
 
-PAGENO GetRightbracketLeafpage(PAGENO PageNo, char *key) {
-    PAGENO LeafPageNo;
+struct PageHdr* GetRightbracketLeafpage(PAGENO PageNo, char *key) {
     struct PageHdr *PagePtr = FetchPage(PageNo);
+    struct PageHdr *result;
     if (IsLeaf(PagePtr)) { /* found leaf */
-        LeafPageNo = PageNo;
+        result = PagePtr;
     } else if (PagePtr->NumKeys == 0) {
         assert(IsNonLeaf(PagePtr));
         /* keys, if any, will be stored in Page# 2
            THESE PIECE OF CODE SHOULD GO soon! **/
-        LeafPageNo = GetRightbracketLeafpage(FIRSTLEAFPG, key);
+        result = GetRightbracketLeafpage(FIRSTLEAFPG, key);
     } else {
         assert((IsNonLeaf(PagePtr)) && (PagePtr->NumKeys > 0));
 
@@ -55,20 +54,22 @@ PAGENO GetRightbracketLeafpage(PAGENO PageNo, char *key) {
             }
         }
 
-        LeafPageNo = GetRightbracketLeafpage(ChildPage, key);
+        result = GetRightbracketLeafpage(ChildPage, key);
     }
-    FreePage(PagePtr);
-    return LeafPageNo;
+    if (result != PagePtr) {
+        FreePage(PagePtr);
+    }
+    return result;
 }
 
-char* ScanLeafRightBracket(PAGENO PageNo, char* key) {
-    struct PageHdr *PagePtr;
+/* Need to free the page pointer before return */
+void ScanLeafRightBracket(struct PageHdr *PagePtr, char *key, char *result) {
     struct KeyRecord *KeyListTraverser;
     char *word;
     PAGENO FindNumPagesInTree(void);
+    PAGENO PageNo = PagePtr->PgNum;
 
-    while (PageNo >= 1 && PageNo <= FindNumPagesInTree()) {
-        PagePtr = FetchPage(PageNo);
+    while (TRUE) {
         KeyListTraverser = PagePtr->KeyListPtr;
         while (KeyListTraverser) {
             word = KeyListTraverser->StoredKey;
@@ -76,16 +77,19 @@ char* ScanLeafRightBracket(PAGENO PageNo, char* key) {
             if (Result == 2 || IsPrefix(key, word)) {
                 KeyListTraverser = KeyListTraverser->Next;
             } else {
-                char *result = malloc(strlen(word) + 1);
                 strcpy(result, word);
                 FreePage(PagePtr);
-                return result;
+                return;
             }
         }
         PageNo = PagePtr->PgNumOfNxtLfPg;
         FreePage(PagePtr);
+        if (PageNo < 1 || PageNo > FindNumPagesInTree()) {
+            break;
+        }
+        PagePtr = FetchPage(PageNo);
     }
-    return "*NONE*";
+    strcpy(result, "*NONE*");
 }
 
 int IsPrefix(char *prefix, char *word) {
